@@ -1,0 +1,815 @@
+/* ============================================
+   BEATRICE LAND — Personal Website
+   Styled as a layered wedding invitation
+   ============================================ */
+
+/* --- Custom Properties --- */
+:root {
+  --coral: #D4705A;
+  --coral-deep: #C4604A;
+  --gold: #C9A84C;
+  --gold-light: #D4B85C;
+  --green: #4A7C59;
+  --green-dark: #3A6248;
+  --periwinkle: #7B8FBF;
+  --parchment: #F5EFE0;
+  --parchment-dark: #EDE6D6;
+  --page-bg: #E8E0D0;
+  --text: #2C2C2C;
+  --text-muted: #5A5248;
+  --rose: #C4887A;
+  --rose-light: #D4A89A;
+}
+
+/* --- Reset & Base --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  background-color: var(--coral);
+  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  color: var(--text);
+  padding: 0;
+}
+
+/* --- Hidden SVG Defs --- */
+.svg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ============================================
+   PAGE CONTAINER
+   ============================================ */
+.page {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  animation: card-reveal 1s ease-out both;
+}
+
+/* ============================================
+   LAYERED BORDER FRAMES
+   ============================================ */
+
+/* --- Outer Frame: Coral with diagonal stripes --- */
+.border-outer {
+  background-color: var(--coral);
+  background-image:
+    repeating-linear-gradient(
+      50deg,
+      transparent,
+      transparent 5px,
+      rgba(255, 255, 255, 0.1) 5px,
+      rgba(255, 255, 255, 0.1) 6.5px
+    );
+  padding: clamp(14px, 2.5vw, 24px);
+  border-radius: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  animation: border-outer-reveal 0.8s ease-out both;
+}
+
+/* --- Middle Frame: Gold with crosshatch --- */
+.border-middle {
+  background-color: var(--gold);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 7px,
+      rgba(255, 255, 255, 0.09) 7px,
+      rgba(255, 255, 255, 0.09) 8px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 7px,
+      rgba(255, 255, 255, 0.09) 7px,
+      rgba(255, 255, 255, 0.09) 8px
+    );
+  padding: clamp(10px, 2vw, 18px);
+  border-radius: 2px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  animation: border-middle-reveal 0.8s ease-out 0.1s both;
+}
+
+/* ============================================
+   INVITATION CARD (Parchment)
+   ============================================ */
+.invitation-card {
+  position: relative;
+  background-color: var(--parchment);
+  background-image:
+    /* warm blotchy spots — like aged paper */
+    radial-gradient(ellipse at 15% 20%, rgba(195, 170, 130, 0.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 85% 15%, rgba(190, 165, 125, 0.09) 0%, transparent 35%),
+    radial-gradient(ellipse at 70% 70%, rgba(195, 170, 130, 0.11) 0%, transparent 45%),
+    radial-gradient(ellipse at 30% 80%, rgba(185, 160, 120, 0.08) 0%, transparent 35%),
+    radial-gradient(ellipse at 50% 45%, rgba(180, 155, 115, 0.06) 0%, transparent 50%),
+    /* darker edges — vignette like worn paper */
+    radial-gradient(ellipse at center, transparent 50%, rgba(150, 130, 95, 0.1) 100%);
+  border-radius: 1px;
+  padding: clamp(40px, 8vw, 80px) clamp(32px, 6vw, 70px);
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  animation: card-content-reveal 0.9s ease-out 0.15s both;
+}
+
+/* Paper grain texture overlay */
+.paper-texture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: multiply;
+}
+
+/* ============================================
+   BOTANICAL CORNER FLOURISHES
+   ============================================ */
+.botanical {
+  position: absolute;
+  width: clamp(100px, 28%, 160px);
+  height: clamp(100px, 28%, 160px);
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  animation: botanical-reveal 1s ease-out 0.5s both;
+}
+
+.corner-tl {
+  top: clamp(4px, 1vw, 10px);
+  left: clamp(4px, 1vw, 10px);
+}
+
+.corner-tr {
+  top: clamp(4px, 1vw, 10px);
+  right: clamp(4px, 1vw, 10px);
+  transform: scaleX(-1);
+}
+
+.corner-bl {
+  bottom: clamp(4px, 1vw, 10px);
+  left: clamp(4px, 1vw, 10px);
+  transform: scaleY(-1);
+}
+
+.corner-br {
+  bottom: clamp(4px, 1vw, 10px);
+  right: clamp(4px, 1vw, 10px);
+  transform: scale(-1, -1);
+}
+
+/* ============================================
+   INNER DECORATIVE FRAME
+   ============================================ */
+.inner-frame {
+  position: relative;
+  z-index: 3;
+  border: 1.5px dashed var(--rose-light);
+  padding: clamp(28px, 5vw, 52px) clamp(20px, 4vw, 40px);
+  border-radius: 1px;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Subtle inner shadow for depth */
+.inner-frame::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 1px solid rgba(196, 136, 122, 0.2);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* ============================================
+   CONTENT
+   ============================================ */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  opacity: 0;
+  animation: text-reveal 0.8s ease-out 0.7s both;
+}
+
+/* --- Greeting --- */
+.greeting {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', serif;
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  margin-bottom: clamp(8px, 2vw, 16px);
+  text-transform: lowercase;
+}
+
+/* --- Name (Script) --- */
+.name {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(2.6rem, 8vw, 4.2rem);
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: clamp(12px, 2.5vw, 24px);
+  letter-spacing: 0.02em;
+}
+
+/* --- Ornamental Divider --- */
+.divider {
+  width: clamp(140px, 50%, 220px);
+  height: auto;
+  margin-bottom: clamp(16px, 3vw, 32px);
+  opacity: 0.85;
+}
+
+/* --- Navigation Links --- */
+.links {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 20px);
+  margin-bottom: clamp(20px, 4vw, 40px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.link {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  position: relative;
+  transition: color 0.35s ease;
+  padding-bottom: 2px;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background-color: var(--coral);
+  transition: width 0.35s ease, left 0.35s ease;
+}
+
+.link:hover {
+  color: var(--coral);
+}
+
+.link:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.dot {
+  font-size: 1.4em;
+  color: var(--rose);
+  line-height: 1;
+  user-select: none;
+}
+
+/* --- Footer / Contact --- */
+.card-footer {
+  padding-top: clamp(4px, 1vw, 8px);
+}
+
+.contact {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.contact-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(90, 82, 72, 0.25);
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.contact-link:hover {
+  color: var(--coral);
+  border-color: var(--coral);
+}
+
+/* ============================================
+   SUBPAGE LAYOUT
+   ============================================ */
+.subpage-content {
+  align-items: stretch;
+  width: 100%;
+  max-width: 640px;
+}
+
+.subpage-content .page-title,
+.subpage-content .divider {
+  align-self: center;
+}
+
+/* --- Back Navigation --- */
+.back-nav {
+  margin-bottom: clamp(12px, 2vw, 20px);
+}
+
+.back-link {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-muted);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: var(--coral);
+}
+
+/* --- Page Title (Script, like name) --- */
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.25;
+  margin-bottom: clamp(8px, 2vw, 16px);
+  letter-spacing: 0.01em;
+}
+
+/* --- Subpage Body --- */
+.subpage-body {
+  width: 100%;
+  text-align: left;
+}
+
+/* ============================================
+   RESUME STYLES
+   ============================================ */
+.resume-summary {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-muted);
+  line-height: 1.65;
+  text-align: left;
+  width: 100%;
+  margin-bottom: clamp(20px, 4vw, 36px);
+}
+
+.resume-section {
+  margin-bottom: clamp(24px, 4vw, 40px);
+}
+
+.resume-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-heading {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', serif;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--green);
+  text-transform: lowercase;
+  border-bottom: 1px solid var(--rose-light);
+  padding-bottom: 6px;
+  margin-bottom: clamp(12px, 2vw, 20px);
+}
+
+.resume-entry {
+  margin-bottom: clamp(16px, 3vw, 24px);
+}
+
+.resume-entry:last-child {
+  margin-bottom: 0;
+}
+
+.resume-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.entry-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.entry-date {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.entry-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--coral);
+  margin-bottom: 4px;
+}
+
+.entry-company-desc {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--rose);
+  margin-bottom: 6px;
+}
+
+.entry-detail {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.entry-list {
+  list-style: none;
+  padding: 0;
+}
+
+.entry-list li {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.88rem, 2vw, 1rem);
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding-left: 16px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.entry-list li:last-child {
+  margin-bottom: 0;
+}
+
+.entry-list li::before {
+  content: '\2022';
+  color: var(--rose);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.entry-list li strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ============================================
+   ART GALLERY STYLES
+   ============================================ */
+.art-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: clamp(16px, 3vw, 24px);
+}
+
+.art-piece {
+  text-align: center;
+}
+
+.art-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border: 1px solid var(--rose-light);
+  border-radius: 2px;
+  margin-bottom: 8px;
+  background-color: var(--parchment-dark);
+}
+
+.art-caption {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* ============================================
+   LIGHTBOX
+   ============================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(44, 44, 44, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.lightbox.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: var(--parchment);
+  font-size: 2.4rem;
+  font-family: 'Cormorant Garamond', serif;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+  transition: color 0.3s ease;
+  z-index: 1001;
+}
+
+.lightbox-close:hover {
+  color: var(--coral);
+}
+
+.lightbox-img {
+  max-width: min(90vw, 500px);
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 2px;
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.3);
+}
+
+.lightbox-caption {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--parchment);
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* ============================================
+   BLOG STYLES
+   ============================================ */
+.blog-post {
+  margin-bottom: clamp(24px, 4vw, 36px);
+  padding-bottom: clamp(24px, 4vw, 36px);
+  border-bottom: 1px solid var(--rose-light);
+}
+
+.blog-post:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.post-date {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', serif;
+  font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: var(--rose);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.post-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.post-excerpt {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+
+.post-body p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.92rem, 2vw, 1.08rem);
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.75;
+  margin-bottom: 1em;
+}
+
+.post-body p:last-child {
+  margin-bottom: 0;
+}
+
+.post-images {
+  display: flex;
+  gap: clamp(8px, 1.5vw, 14px);
+  margin: 1.2em 0;
+}
+
+.post-images img {
+  flex: 1;
+  min-width: 0;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.post-images-1 img {
+  max-width: 60%;
+  flex: none;
+  display: block;
+  margin: 0 auto;
+}
+
+.read-more {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--coral);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.read-more:hover {
+  color: var(--coral-deep);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes card-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes border-outer-reveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes border-middle-reveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes card-content-reveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes botanical-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.corner-tl { animation: botanical-fade 1s ease-out 0.5s both; }
+.corner-tr { animation: botanical-fade 1s ease-out 0.6s both; }
+.corner-bl { animation: botanical-fade 1s ease-out 0.65s both; }
+.corner-br { animation: botanical-fade 1s ease-out 0.7s both; }
+
+@keyframes text-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Mobile */
+@media (max-width: 520px) {
+  .border-outer {
+    padding: 10px;
+  }
+
+  .border-middle {
+    padding: 8px;
+  }
+
+  .invitation-card {
+    padding: clamp(32px, 10vw, 60px) clamp(20px, 6vw, 40px);
+  }
+
+  .inner-frame {
+    padding: clamp(20px, 6vw, 36px) clamp(12px, 4vw, 24px);
+    border-width: 1px;
+  }
+
+  .inner-frame::before {
+    inset: -5px;
+  }
+
+  .botanical {
+    width: 80px;
+    height: 80px;
+  }
+
+  .links {
+    gap: 8px 16px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .botanical {
+    width: 60px;
+    height: 60px;
+  }
+
+  .name {
+    font-size: 2.2rem;
+  }
+
+  .border-outer {
+    padding: 8px;
+  }
+
+  .border-middle {
+    padding: 6px;
+  }
+}
+
+/* --- Prefers reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}
