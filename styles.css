@@ -737,7 +737,7 @@ body {
   max-width: 380px;
 }
 
-.subscribe-input {
+.subscribe-form input[type="email"] {
   flex: 1;
   min-width: 180px;
   padding: 8px 14px;
@@ -750,17 +750,19 @@ body {
   border-radius: 1px;
   outline: none;
   transition: border-color 0.3s ease;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.subscribe-input::placeholder {
+.subscribe-form input[type="email"]::placeholder {
   color: var(--rose-light);
 }
 
-.subscribe-input:focus {
+.subscribe-form input[type="email"]:focus {
   border-color: var(--coral);
 }
 
-.subscribe-button {
+.subscribe-form button[type="submit"] {
   padding: 8px 20px;
   font-family: 'Cormorant SC', 'Cormorant Garamond', serif;
   font-size: clamp(0.85rem, 1.8vw, 0.95rem);
@@ -768,15 +770,18 @@ body {
   letter-spacing: 0.12em;
   color: var(--parchment);
   background-color: var(--coral);
-  border: none;
+  border: 1px solid var(--coral);
   border-radius: 1px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
   text-transform: lowercase;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.subscribe-button:hover {
+.subscribe-form button[type="submit"]:hover {
   background-color: var(--coral-deep);
+  border-color: var(--coral-deep);
 }
 
 /* ============================================
