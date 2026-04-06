@@ -698,6 +698,88 @@ body {
 }
 
 /* ============================================
+   SUBSCRIBE SECTION
+   ============================================ */
+.subscribe-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: clamp(24px, 4vw, 40px);
+}
+
+.subscribe-heading {
+  font-family: 'Cormorant SC', 'Cormorant Garamond', serif;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  margin-top: clamp(12px, 2vw, 20px);
+  margin-bottom: 6px;
+  text-transform: lowercase;
+}
+
+.subscribe-note {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--rose);
+  margin-bottom: clamp(14px, 2.5vw, 22px);
+}
+
+.subscribe-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 380px;
+}
+
+.subscribe-input {
+  flex: 1;
+  min-width: 180px;
+  padding: 8px 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-style: italic;
+  color: var(--text);
+  background-color: transparent;
+  border: 1px solid var(--rose-light);
+  border-radius: 1px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.subscribe-input::placeholder {
+  color: var(--rose-light);
+}
+
+.subscribe-input:focus {
+  border-color: var(--coral);
+}
+
+.subscribe-button {
+  padding: 8px 20px;
+  font-family: 'Cormorant SC', 'Cormorant Garamond', serif;
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--parchment);
+  background-color: var(--coral);
+  border: none;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-transform: lowercase;
+}
+
+.subscribe-button:hover {
+  background-color: var(--coral-deep);
+}
+
+/* ============================================
    ANIMATIONS
    ============================================ */
 @keyframes card-reveal {
