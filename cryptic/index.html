@@ -1,0 +1,560 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  ============================================================
+  YOUR OWN MINUTE-CRYPTIC-STYLE PUZZLE
+  ============================================================
+  To make a new puzzle for your friend, edit ONLY the PUZZLE
+  block in the <script> near the bottom of this file. Everything
+  is commented. Then send them this .html file (or the shared link).
+  ============================================================
+-->
+<title>Cryptic — a clue for you</title>
+<link rel="icon" type="image/png" href="../favicon.png">
+<!-- Link preview (iMessage / social) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://beatrice.land/cryptic">
+<meta property="og:title" content="A cryptic clue for you">
+<meta property="og:description" content="One clue, one answer — can you crack it?">
+<meta property="og:image" content="https://beatrice.land/cryptic/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A cryptic clue for you">
+<meta name="twitter:description" content="One clue, one answer — can you crack it?">
+<meta name="twitter:image" content="https://beatrice.land/cryptic/preview.png">
+<style>
+  :root{
+    --bg:#b9ccf4;          /* periwinkle background */
+    --ink:#17181d;         /* near-black ink + borders */
+    --card:#ffffff;        /* white cards */
+    --pill:#efd7f7;        /* lavender-pink */
+    --yellow:#f6e08a;      /* the yellow "hints" button + fodder highlight */
+    --yellow-soft:#fbeea0;
+    --indicator:#c6e6c0;   /* soft green: wordplay indicators */
+    --cursor:#f2d9fa;      /* pink cursor cell */
+    --def:#c9daf7;         /* blue definition highlight */
+    --panel:#dbe6fb;       /* light-blue info panels */
+    --muted:#5b6070;
+    --keyline:#aab6cd;
+    --serif:Georgia,"Times New Roman",serif;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--serif);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+    min-height:100dvh;
+    display:flex;flex-direction:column;
+  }
+  .wrap{width:100%;max-width:600px;margin:0 auto;padding:0 18px;flex:1}
+
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;gap:14px;padding:14px 2px 18px}
+  .iconbtn{
+    background:none;border:none;cursor:pointer;color:var(--ink);
+    font-size:24px;line-height:1;padding:6px;border-radius:8px;font-family:var(--serif);
+  }
+  .iconbtn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+  .meta{flex:1;min-width:0}
+  .meta .date{font-weight:bold;font-size:17px}
+  .meta .by{font-size:13px;color:var(--muted);font-style:italic}
+
+  /* ---------- clue (borderless while playing) ---------- */
+  .cluecard{
+    background:var(--card);border-radius:18px;
+    padding:22px 24px;margin-bottom:26px;
+    box-shadow:0 6px 20px rgba(40,60,110,.12);
+  }
+  .clue{font-size:clamp(19px,4.8vw,25px);line-height:1.5}
+  .clue .seg{padding:1px 2px;border-radius:4px;transition:background .3s}
+  .clue .seg.lit.fodder{background:var(--yellow-soft)}
+  .clue .seg.lit.def{background:var(--def)}
+  .clue .seg.lit.indicator{background:var(--indicator)}
+  .enum{white-space:nowrap;color:var(--muted)}
+
+  /* ---------- connected letter strip ---------- */
+  .gridwrap{display:flex;justify-content:center;margin-bottom:22px}
+  .grid{
+    display:flex;border:3.5px solid var(--ink);border-radius:8px;overflow:hidden;
+    max-width:100%;
+  }
+  .cell{
+    width:clamp(30px,9vw,46px);height:clamp(40px,11.5vw,56px);
+    display:grid;place-items:center;background:var(--card);
+    border-right:2px solid var(--ink);
+    font-weight:bold;font-style:italic;text-transform:uppercase;
+    font-size:clamp(20px,6vw,30px);
+  }
+  .cell:last-child{border-right:none}
+  .cell.gap{border-right:none;width:12px;background:var(--bg);min-width:12px}
+  .cell.cursor{background:var(--cursor)}
+  .cell.pop{animation:pop .16s ease}
+  @keyframes pop{50%{transform:scale(1.15)}}
+  .grid.solved .cell:not(.gap){background:var(--cursor)}
+  .grid.shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+
+  /* ---------- golf scorecard dots ---------- */
+  .score{display:flex;flex-direction:column;align-items:center;margin-bottom:26px}
+  .dots{display:flex;gap:9px}
+  .dotcol{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .dot{width:15px;height:15px;border-radius:50%;background:#a9bbe0}
+  .dot.faint{background:#cdd8ef}
+  .dot.done{background:#5b6b93}
+  .dot.here{background:var(--card);border:2.5px solid var(--ink)}
+  .dotlbl{font-weight:bold;font-style:italic;font-size:14px;height:14px}
+
+  /* ---------- controls ---------- */
+  .controls{display:flex;gap:14px;justify-content:center;align-items:center;margin-bottom:8px}
+  .pill{
+    font-family:var(--serif);font-weight:bold;font-style:italic;font-size:19px;color:var(--ink);
+    border:2.5px solid var(--ink);border-radius:999px;padding:12px 30px;cursor:pointer;
+    background:var(--card);box-shadow:0 4px 0 rgba(0,0,0,.55);
+    transition:transform .06s,box-shadow .06s;
+  }
+  .pill.hints{background:var(--yellow)}
+  .pill.check{color:#9aa2b4;border-color:#9aa2b4;box-shadow:0 4px 0 #c6ccd8}
+  .pill.check.ready{color:var(--ink);border-color:var(--ink);box-shadow:0 4px 0 rgba(0,0,0,.55)}
+  .pill:active{transform:translateY(3px);box-shadow:none}
+  .pill:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+
+  .msg{text-align:center;min-height:22px;font-weight:bold;font-size:15px;margin:14px 0 0}
+  .msg.bad{color:#b1263b}
+
+  /* revealed hint text while playing */
+  .revealed{max-width:520px;margin:20px auto 0}
+  .revealed .line{background:var(--card);border-radius:12px;padding:12px 16px;margin-bottom:10px;font-size:15px;line-height:1.5}
+  .revealed .line .lbl{font-weight:bold}
+
+  /* ---------- on-screen keyboard (minimal) ---------- */
+  .kbd{width:100%;max-width:560px;margin:26px auto 14px;padding:0 6px;display:flex;flex-direction:column;gap:7px}
+  .krow{display:flex;gap:6px;justify-content:center}
+  .key{
+    flex:1 1 0;min-width:0;font-family:var(--serif);font-size:16px;
+    background:var(--card);border:1.5px solid var(--keyline);border-radius:7px;
+    padding:14px 0;cursor:pointer;color:#2a2f3a;text-transform:uppercase;
+  }
+  .key.wide{flex:1.5 1 0}
+  .key:active{background:#e7edf9}
+  .key:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+
+  /* ---------- solved result + unpack ---------- */
+  .result{
+    background:var(--card);border:4px solid #000;border-radius:22px;
+    box-shadow:0 5px 0 rgba(0,0,0,.9);padding:24px;text-align:center;margin:6px 0 26px;display:none;
+  }
+  .result.show{display:block}
+  .result h2{font-size:28px;margin:2px 0 6px}
+  .result .sc{font-style:italic;color:var(--muted);font-size:17px;margin-bottom:18px}
+  .result .pill{background:var(--pill)}
+
+  .unpack{margin-top:8px;display:none}
+  .unpack.show{display:block}
+  .unpack h3{font-size:21px;margin:0 0 14px}
+  .panel{background:var(--panel);border-radius:16px;padding:18px 20px;margin-bottom:16px}
+  .panel .flag{font-weight:bold;font-style:italic;font-size:18px;margin-bottom:10px}
+  .statrow{display:flex;justify-content:space-between;padding:6px 0;font-size:16px}
+  .hintline{margin:0 0 12px;font-size:15px;line-height:1.5}
+  .hintline:last-child{margin-bottom:0}
+  .hintline .lbl{font-weight:bold}
+
+  /* ---------- sheets / modals ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(30,40,70,.4);display:none;z-index:20}
+  .backdrop.open{display:block}
+  .sheet{
+    position:fixed;left:50%;bottom:0;transform:translateX(-50%);
+    width:100%;max-width:600px;background:var(--card);
+    border:3px solid #000;border-bottom:none;border-radius:18px 18px 0 0;
+    padding:20px 22px 30px;z-index:21;
+  }
+  .sheet h4{margin:0 0 6px;font-weight:normal;font-size:16px;color:#333}
+  .sheet .x{position:absolute;top:14px;right:16px}
+  .hintopt{
+    display:block;width:100%;text-align:left;background:none;border:none;cursor:pointer;
+    font-family:var(--serif);font-weight:bold;font-style:italic;font-size:19px;color:var(--ink);
+    padding:14px 2px;border-bottom:1px solid #eee;
+  }
+  .hintopt .hl{padding:1px 4px;border-radius:4px}
+  .hintopt.def .hl{background:var(--def)}
+  .hintopt.fodder .hl{background:var(--yellow-soft)}
+  .hintopt.indicator .hl{background:var(--indicator)}
+  .hintopt:disabled{opacity:.4;cursor:default}
+  .hintopt:focus-visible{outline:2px solid var(--ink)}
+
+  .modal{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:calc(100% - 36px);max-width:430px;background:var(--card);
+    border:4px solid #000;border-radius:20px;box-shadow:0 5px 0 rgba(0,0,0,.9);
+    padding:24px;z-index:21;
+  }
+  .modal h2{margin:0 0 12px;font-size:23px}
+  .modal p{font-size:15px;margin:0 0 12px}
+  .modal .x{position:absolute;top:12px;right:14px}
+
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:11px 20px;border-radius:999px;font-size:15px;
+    opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:40;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="topbar">
+    <button class="iconbtn" id="infoBtn" aria-label="How to play" title="How to play">&#9432;</button>
+    <div class="meta">
+      <div class="date" id="date"></div>
+      <div class="by" id="by"></div>
+    </div>
+  </div>
+
+  <div class="cluecard"><div class="clue" id="clue"></div></div>
+
+  <div class="gridwrap"><div class="grid" id="grid" role="group" aria-label="Your answer"></div></div>
+
+  <div class="score" id="score">
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="controls" id="controls">
+    <button class="pill hints" id="hintBtn">hints</button>
+    <button class="pill check" id="checkBtn">check</button>
+  </div>
+  <div class="msg" id="msg" aria-live="polite"></div>
+  <div class="revealed" id="revealed"></div>
+
+  <div class="result" id="result"></div>
+
+  <div class="unpack" id="unpack">
+    <h3>Unpack this clue</h3>
+    <div class="panel">
+      <div class="flag" id="parflag"></div>
+      <div class="statrow"><span>Answer</span><b id="statAnswer"></b></div>
+      <div class="statrow"><span>Par</span><b id="statPar"></b></div>
+      <div class="statrow"><span>You solved it with</span><b id="statYou"></b></div>
+    </div>
+    <div class="panel">
+      <div class="flag">Check out the hints</div>
+      <div id="hintDump"></div>
+      <div class="hintline" style="margin-top:14px"><span class="lbl">The full unpack:</span> <span id="explain"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="kbd" id="kbd"></div>
+
+<!-- hint picker sheet -->
+<div class="backdrop" id="hintBack"></div>
+<div class="sheet" id="hintSheet" style="display:none" role="dialog" aria-label="Select a hint">
+  <button class="iconbtn x" id="closeHints" aria-label="Close">&times;</button>
+  <h4>Select a hint</h4>
+  <div id="hintOpts"></div>
+</div>
+
+<!-- how to play -->
+<div class="backdrop" id="infoBack"></div>
+<div class="modal" id="infoModal" style="display:none" role="dialog" aria-label="How to play">
+  <button class="iconbtn x" id="closeInfo" aria-label="Close">&times;</button>
+  <h2>How to play</h2>
+  <p>One cryptic clue. Every clue has two halves: a <b>definition</b> (a plain synonym for the answer, at the start or end) and some <b>wordplay</b> that spells it a sneakier way. The number in brackets is the letter count.</p>
+  <p>Type your guess and hit <b>check</b>. Stuck? Tap <b>hints</b> and pick one — like golf, the goal is to solve in as few hints as you can. A hint lights up part of the clue: <span style="background:var(--def);padding:0 3px">blue</span> is the definition, <span style="background:var(--indicator);padding:0 3px">green</span> marks the indicators (words telling you what to do), and <span style="background:var(--yellow-soft);padding:0 3px">yellow</span> is the fodder (the raw material).</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   THE PUZZLE — edit this to make your own.
+   ============================================================ */
+const PUZZLE = {
+  by: "A clue from Beatrice",           // shown under the date
+  date: "Just for you",                 // any text you like
+
+  // The clue, split into pieces so it can light up when a hint
+  // is taken (and when solved).
+  //   role: "def"       -> the definition          (lights up BLUE)
+  //         "indicator" -> a wordplay instruction   (lights up GREEN)
+  //         "fodder"    -> the raw letters/words    (lights up YELLOW)
+  //         "plain"     -> connecting words         (stays black)
+  clue: [
+    { text: "Tracks",     role: "def" },
+    { text: "that the",   role: "plain" },
+    { text: "liar",       role: "fodder" },
+    { text: "reflected",  role: "indicator" },
+    { text: "before the", role: "indicator" },
+    { text: "street",     role: "fodder" }
+  ],
+
+  // The answer. Use a SPACE between words for multi-word answers
+  // (e.g. "TOP HAT" reads "(3,3)" and shows a gap in the grid).
+  answer: "RAILROAD",
+
+  par: 2,   // how many hints counts as "par" (a good solve)
+
+  // The three hints. Each lights up its part of the clue when shown.
+  hints: {
+    definition: "The definition here is &lsquo;Tracks&rsquo;, and the answer will be a word for that.",
+    indicator:  "There are two indicators. &lsquo;Reflected&rsquo; tells you to reverse the letters of something; &lsquo;before the&rsquo; tells you to place one piece in front of another.",
+    fodder:     "The fodder &mdash; the raw words to work on &mdash; is &lsquo;liar&rsquo; and &lsquo;street&rsquo;. Reverse LIAR, and think of another word for a street."
+  },
+
+  // Shown after solving or revealing.
+  explanation: "RAIL (LIAR &lsquo;reflected&rsquo;, i.e. reversed) + ROAD (&lsquo;the street&rsquo;) = RAILROAD &mdash; the &lsquo;Tracks&rsquo;."
+};
+/* ============================================================
+   You shouldn't need to edit below here.
+   ============================================================ */
+const $ = id => document.getElementById(id);
+
+const words = PUZZLE.answer.trim().toUpperCase().split(/\s+/);
+const solution = words.join("");                 // letters only, no spaces
+const enumStr = "(" + words.map(w=>w.length).join(",") + ")";
+
+let guess = "";
+let strokes = 0;
+let finished = false;
+const usedHints = new Set();
+
+$("date").textContent = PUZZLE.date;
+$("by").textContent = PUZZLE.by;
+
+// ---- clue ----
+(function(){
+  const el = $("clue");
+  PUZZLE.clue.forEach((s,i)=>{
+    const sp=document.createElement("span");
+    sp.className="seg "+s.role; sp.dataset.role=s.role;
+    sp.textContent=s.text+(i<PUZZLE.clue.length-1?" ":"");
+    el.appendChild(sp);
+  });
+  const e=document.createElement("span"); e.className="enum"; e.textContent=" "+enumStr; el.appendChild(e);
+})();
+function litClue(role){ [...$("clue").querySelectorAll(".seg."+role)].forEach(s=>s.classList.add("lit")); }
+
+// ---- letter grid (connected strip with word gaps) ----
+const cells=[];
+(function(){
+  const g=$("grid"); let first=true;
+  words.forEach(w=>{
+    if(!first){ const gap=document.createElement("div"); gap.className="cell gap"; g.appendChild(gap); }
+    first=false;
+    for(let i=0;i<w.length;i++){ const c=document.createElement("div"); c.className="cell"; g.appendChild(c); cells.push(c); }
+  });
+})();
+function paint(pop){
+  cells.forEach((c,i)=>{
+    c.textContent = guess[i]||"";
+    c.classList.toggle("cursor", i===guess.length && !finished);
+  });
+  if(pop && guess.length){ const c=cells[guess.length-1]; c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop"); }
+  const ready = guess.length===solution.length && !finished;
+  $("checkBtn").classList.toggle("ready", ready);
+}
+
+// ---- golf scorecard dots ----
+const DOT_COUNT = Math.max(PUZZLE.par+4, 6);
+(function(){
+  const d=$("dots");
+  for(let i=0;i<DOT_COUNT;i++){
+    const col=document.createElement("div"); col.className="dotcol";
+    const dot=document.createElement("div"); dot.className="dot";
+    const lbl=document.createElement("div"); lbl.className="dotlbl";
+    if(i===PUZZLE.par-1) lbl.textContent="par";
+    col.appendChild(dot); col.appendChild(lbl); d.appendChild(col);
+  }
+  paintDots();
+})();
+function paintDots(){
+  [...$("dots").children].forEach((col,i)=>{
+    const dot=col.firstChild; dot.className="dot";
+    if(i<strokes) dot.classList.add("done");
+    else if(i===strokes && !finished) dot.classList.add("here");
+    else if(i>PUZZLE.par-1) dot.classList.add("faint");
+  });
+}
+
+// ---- input ----
+function addLetter(ch){
+  if(finished||guess.length>=solution.length) return;
+  guess+=ch.toUpperCase(); paint(true); clearMsg();
+}
+function delLetter(){ if(finished) return; guess=guess.slice(0,-1); paint(false); clearMsg(); }
+
+function check(){
+  if(finished) return;
+  if(guess.length<solution.length){ setMsg("Fill in every letter first."); return; }
+  if(guess===solution) win(); else {
+    const g=$("grid"); g.classList.remove("shake"); void g.offsetWidth; g.classList.add("shake");
+    setMsg("Not quite — try again.");
+  }
+}
+
+// ---- hints ----
+const HINT_DEFS=[
+  {key:"definition", cls:"def",       label:"show definition", full:"Definition"},
+  {key:"indicator",  cls:"indicator", label:"show indicator",  full:"Indicator"},
+  {key:"fodder",     cls:"fodder",    label:"show fodder",     full:"Fodder"},
+  {key:"letter",     cls:"",          label:"show letter",     full:"Letter"}
+];
+(function(){
+  const box=$("hintOpts");
+  HINT_DEFS.forEach(h=>{
+    const b=document.createElement("button");
+    b.className="hintopt "+h.cls; b.dataset.key=h.key;
+    b.innerHTML=`<span class="hl">${h.label}</span>`;
+    b.addEventListener("click",()=>takeHint(h));
+    box.appendChild(b);
+  });
+})();
+function openHints(){ if(finished) return; $("hintBack").classList.add("open"); $("hintSheet").style.display="block"; }
+function closeHints(){ $("hintBack").classList.remove("open"); $("hintSheet").style.display="none"; }
+
+function takeHint(h){
+  if(finished||usedHints.has(h.key)) return;
+  usedHints.add(h.key);
+  strokes++; paintDots();
+  closeHints();
+
+  if(h.key==="letter"){
+    // fill the first empty (and any wrong) leading cell with the correct letter
+    let i = guess.length<solution.length ? guess.length : guess.length-1;
+    if(guess.length<solution.length){ guess+=solution[guess.length]; }
+    else { guess=solution.slice(0,guess.length); }
+    paint(true);
+    addRevealed("Letter", "The next letter is <b>"+solution[i]+"</b>.");
+  } else {
+    if(h.key==="definition") litClue("def");
+    if(h.key==="indicator") litClue("indicator");
+    if(h.key==="fodder") litClue("fodder");
+    addRevealed(h.full, PUZZLE.hints[h.key]);
+  }
+  // disable the option in the menu
+  const btn=[...$("hintOpts").children].find(b=>b.dataset.key===h.key);
+  if(btn) btn.disabled=true;
+}
+function addRevealed(label,text){
+  const l=document.createElement("div"); l.className="line";
+  l.innerHTML=`<span class="lbl">${label}:</span> ${text}`;
+  $("revealed").appendChild(l);
+}
+
+// ---- end states ----
+function win(){ finished=true; endShared(true); }
+function endShared(solved){
+  paint(false);
+  $("grid").classList.add("solved");
+  litClue("def"); litClue("indicator"); litClue("fodder");
+  paintDots();
+  // hide the live controls + keyboard
+  $("controls").style.display="none";
+  $("msg").style.display="none";
+  $("revealed").style.display="none";
+  $("kbd").style.display="none";
+  showResult(solved);
+}
+
+function scoreText(){
+  const d=strokes-PUZZLE.par;
+  if(d<=-2) return "well under par 🦅";
+  if(d===-1) return "under par 🐦";
+  if(d===0)  return "even par ⛳";
+  if(d===1)  return "one over par";
+  return d+" over par";
+}
+function showResult(solved){
+  const r=$("result");
+  r.innerHTML = solved
+    ? `<h2>You got it!</h2><div class="sc">solved with ${strokes} hint${strokes===1?"":"s"} — ${scoreText()}</div>`
+    : `<h2>Next time!</h2><div class="sc">the answer was <b>${PUZZLE.answer.toUpperCase()}</b></div>`;
+  const row=document.createElement("div"); row.style.cssText="display:flex;justify-content:center";
+  const share=document.createElement("button"); share.className="pill"; share.textContent="share";
+  share.addEventListener("click",doShare); row.appendChild(share); r.appendChild(row);
+  r.classList.add("show");
+
+  $("parflag").textContent = solved ? scoreText() : "the answer, unpacked";
+  $("statAnswer").textContent = PUZZLE.answer.toUpperCase();
+  $("statPar").textContent = PUZZLE.par+" hint"+(PUZZLE.par===1?"":"s");
+  $("statYou").textContent = solved ? (strokes+" hint"+(strokes===1?"":"s")) : "revealed";
+  const dump=$("hintDump");
+  [["Definition",PUZZLE.hints.definition],["Indicator",PUZZLE.hints.indicator],["Fodder",PUZZLE.hints.fodder]]
+    .forEach(([l,t])=>{ const d=document.createElement("div"); d.className="hintline"; d.innerHTML=`<span class="lbl">${l}:</span> ${t}`; dump.appendChild(d); });
+  $("explain").innerHTML=PUZZLE.explanation;
+  $("unpack").classList.add("show");
+}
+
+function plainClue(){ return PUZZLE.clue.map(s=>s.text).join(" "); }
+function shareText(){
+  return "🧩 Cryptic\n"+plainClue()+" "+enumStr+"\nSolved with "+strokes+" hint"+(strokes===1?"":"s")+" — "+scoreText();
+}
+async function doShare(){
+  const text = shareText();
+  // 1) native share sheet — best on a phone ("send to...")
+  if(navigator.share){
+    try{ await navigator.share({text}); return; }
+    catch(e){ if(e && e.name==="AbortError") return; }
+  }
+  // 2) clipboard — works from the downloaded file / most desktop browsers
+  try{
+    await navigator.clipboard.writeText(text);
+    toast("Copied — paste it to your friend!");
+    return;
+  }catch(e){ /* blocked (e.g. inside an embedded frame) — fall through */ }
+  // 3) always-works fallback: show the text, pre-selected, to copy by hand
+  showShareFallback(text);
+}
+function showShareFallback(text){
+  let box=$("shareFallback");
+  if(!box){
+    box=document.createElement("div"); box.id="shareFallback"; box.style.marginTop="16px";
+    box.innerHTML='<div style="font-size:14px;color:var(--muted);margin-bottom:6px">Copy this and send it to your friend:</div>';
+    const ta=document.createElement("textarea");
+    ta.readOnly=true; ta.rows=3;
+    ta.style.cssText="width:100%;border:2px solid var(--ink);border-radius:10px;padding:10px;font-family:var(--serif);font-size:14px;background:#fff;resize:none";
+    box.appendChild(ta); $("result").appendChild(box);
+  }
+  const ta=box.querySelector("textarea");
+  ta.value=text; ta.style.display="block"; ta.focus(); ta.select();
+}
+
+// ---- keyboard ----
+["QWERTYUIOP","ASDFGHJKL","ZXCVBNM"].forEach((row,r)=>{
+  const rowEl=document.createElement("div"); rowEl.className="krow";
+  if(r===2) rowEl.appendChild(key("enter","wide",check));
+  row.split("").forEach(ch=>rowEl.appendChild(key(ch,"",()=>addLetter(ch))));
+  if(r===2) rowEl.appendChild(key("⌫","wide",delLetter));
+  $("kbd").appendChild(rowEl);
+});
+function key(label,extra,fn){ const b=document.createElement("button"); b.type="button"; b.className="key "+extra; b.textContent=label; b.addEventListener("click",fn); return b; }
+
+// ---- messages / toast ----
+function setMsg(t){ const m=$("msg"); m.textContent=t; m.className="msg bad"; }
+function clearMsg(){ const m=$("msg"); m.textContent=""; m.className="msg"; }
+let tT; function toast(t){ const e=$("toast"); e.textContent=t; e.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>e.classList.remove("show"),2200); }
+
+// ---- wiring ----
+$("checkBtn").addEventListener("click",check);
+$("hintBtn").addEventListener("click",openHints);
+$("closeHints").addEventListener("click",closeHints);
+$("hintBack").addEventListener("click",closeHints);
+$("infoBtn").addEventListener("click",()=>{$("infoBack").classList.add("open");$("infoModal").style.display="block";});
+$("closeInfo").addEventListener("click",closeInfo);
+$("infoBack").addEventListener("click",closeInfo);
+function closeInfo(){$("infoBack").classList.remove("open");$("infoModal").style.display="none";}
+
+document.addEventListener("keydown",e=>{
+  if($("infoModal").style.display==="block"||$("hintSheet").style.display==="block"){ if(e.key==="Escape"){closeInfo();closeHints();} return; }
+  if(finished) return;
+  if(e.key==="Enter"){e.preventDefault();check();}
+  else if(e.key==="Backspace"){e.preventDefault();delLetter();}
+  else if(/^[a-zA-Z]$/.test(e.key)) addLetter(e.key);
+});
+
+paint(false);
+</script>
