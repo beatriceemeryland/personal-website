@@ -214,6 +214,38 @@
   .arcitem.active{background:var(--panel)}
   .arcitem:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
 
+  /* ---------- how-to-play walkthrough ---------- */
+  .modal.howto{max-width:440px;max-height:88vh;overflow-y:auto}
+  .howto-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#cfe0fb;margin-bottom:10px}
+  .howto-ic svg{width:20px;height:20px}
+  .slide{display:none}
+  .slide.on{display:block}
+  .slide h2{font-size:26px;margin:2px 0 14px}
+  .slide p{font-size:16px;margin:0 0 12px;line-height:1.5}
+  .slide ul{margin:0 0 4px;padding-left:22px}
+  .slide li{font-size:16px;margin-bottom:10px;line-height:1.5}
+  .u{padding-bottom:1px;border-bottom:3px solid transparent}
+  .u.def{border-color:var(--def)}
+  .u.ind{border-color:var(--indicator)}
+  .u.fod{border-color:var(--yellow)}
+  .u.len{color:var(--muted);border:none}
+  .diagram{margin-top:18px;background:var(--panel);border-radius:14px;padding:16px 18px}
+  .dex{font-size:19px;line-height:2.1;margin-bottom:14px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:#333}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .legend .sw{width:16px;height:8px;border-radius:2px;flex:none}
+  .legend .sw.def{background:var(--def)}
+  .legend .sw.ind{background:var(--indicator)}
+  .legend .sw.fod{background:var(--yellow)}
+  .legend .sw.len{background:#d7dce6}
+  .howto-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #eee;margin-top:18px;padding-top:14px}
+  .dots2{display:flex;gap:8px}
+  .dots2 .d2{width:9px;height:9px;border-radius:50%;background:#cdd8ef}
+  .dots2 .d2.on{background:var(--ink)}
+  .pilltext{background:none;border:none;font-family:var(--serif);font-weight:bold;font-style:italic;font-size:19px;color:var(--ink);cursor:pointer;padding:4px 10px;border-radius:7px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .pilltext:hover{background:#e7eefb}
+  .pilltext:focus-visible{outline:2px solid var(--ink)}
+
   .toast{
     position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
     background:var(--ink);color:#fff;padding:11px 20px;border-radius:999px;font-size:15px;
@@ -226,11 +258,11 @@
 
 <div class="wrap">
   <div class="topbar">
-    <button class="iconbtn" id="infoBtn" aria-label="How to play" title="How to play">&#9432;</button>
     <div class="meta">
       <div class="date" id="date"></div>
       <div class="by" id="by"></div>
     </div>
+    <button class="iconbtn archivebtn" id="howtoBtn">how to play</button>
     <button class="iconbtn archivebtn" id="archiveBtn" aria-label="Archive" title="Archive">archive</button>
   </div>
 
@@ -277,13 +309,58 @@
   <div id="hintOpts"></div>
 </div>
 
-<!-- how to play -->
-<div class="backdrop" id="infoBack"></div>
-<div class="modal" id="infoModal" style="display:none" role="dialog" aria-label="How to play">
-  <button class="iconbtn x" id="closeInfo" aria-label="Close">&times;</button>
-  <h2>How to play</h2>
-  <p>One cryptic clue. Every clue has two halves: a <b>definition</b> (a plain synonym for the answer, at the start or end) and some <b>wordplay</b> that spells it a sneakier way. The number in brackets is the letter count.</p>
-  <p>Type your guess and hit <b>check</b>. Stuck? Tap <b>hints</b> and pick one — like golf, the goal is to solve in as few hints as you can. A hint lights up part of the clue: <span style="background:var(--def);padding:0 3px">blue</span> is the definition, <span style="background:var(--indicator);padding:0 3px">green</span> marks the indicators (words telling you what to do), and <span style="background:var(--yellow-soft);padding:0 3px">yellow</span> is the fodder (the raw material).</p>
+<!-- how to play (3-slide walkthrough) -->
+<div class="backdrop" id="howtoBack"></div>
+<div class="modal howto" id="howtoModal" style="display:none" role="dialog" aria-label="How to play">
+  <button class="iconbtn x" id="closeHowto" aria-label="Close">&times;</button>
+  <span class="howto-ic" aria-hidden="true">
+    <svg viewBox="0 0 24 24">
+      <rect x="5" y="5" width="14" height="3.2" rx="1.6" fill="#8aa9d6"/>
+      <rect x="5" y="10.4" width="14" height="3.2" rx="1.6" fill="#8aa9d6"/>
+      <rect x="5" y="15.8" width="14" height="3.2" rx="1.6" fill="#17181d"/>
+    </svg>
+  </span>
+
+  <div id="howtoSlides">
+    <div class="slide on">
+      <h2>What&rsquo;s a cryptic clue?</h2>
+      <p>Every cryptic clue is a tiny puzzle with two parts:</p>
+      <ul>
+        <li>a <b>definition</b> &mdash; a direct hint at the answer.</li>
+        <li>and <b>wordplay</b> &mdash; a clever way to build the answer using some mix of letterplay and language tricks.</li>
+      </ul>
+    </div>
+
+    <div class="slide">
+      <h2>What&rsquo;s a cryptic clue?</h2>
+      <p>The wordplay usually has two ingredients:</p>
+      <ul>
+        <li><b>Fodder</b> &mdash; the letters and words you&rsquo;ll be messing with.</li>
+        <li><b>Indicators</b> &mdash; words that tell you what to do with the fodder (mix it up, reverse it, take initials&hellip;)</li>
+      </ul>
+      <div class="diagram">
+        <div class="dex"><span class="u def">Planet</span> from a <span class="u ind">broken</span> <span class="u fod">heart</span> <span class="u len">(5)</span></div>
+        <div class="legend">
+          <span><i class="sw def"></i>definition</span>
+          <span><i class="sw ind"></i>indicator</span>
+          <span><i class="sw fod"></i>fodder</span>
+          <span><i class="sw len"></i>answer length</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide">
+      <h2>How do you play?</h2>
+      <p>Type your answer and hit <b>check</b>. Stuck? Tap <b>hints</b> and pick one &mdash; each lights up its part of the clue (<span class="u def">definition</span>, <span class="u ind">indicator</span>, <span class="u fod">fodder</span>) and counts as a stroke, like golf.</p>
+      <p><b>Using hints is how we learn</b> &mdash; it&rsquo;s always okay to lean on them.</p>
+    </div>
+  </div>
+
+  <div class="howto-foot">
+    <button class="pilltext" id="howtoPrev" style="visibility:hidden">back</button>
+    <div class="dots2" id="howtoDots"></div>
+    <button class="pilltext" id="howtoNext">next</button>
+  </div>
 </div>
 
 <!-- archive -->
@@ -599,10 +676,23 @@ $("checkBtn").addEventListener("click",check);
 $("hintBtn").addEventListener("click",openHints);
 $("closeHints").addEventListener("click",closeHints);
 $("hintBack").addEventListener("click",closeHints);
-$("infoBtn").addEventListener("click",()=>{$("infoBack").classList.add("open");$("infoModal").style.display="block";});
-$("closeInfo").addEventListener("click",closeInfo);
-$("infoBack").addEventListener("click",closeInfo);
-function closeInfo(){$("infoBack").classList.remove("open");$("infoModal").style.display="none";}
+// ---- how to play (carousel) ----
+(function(){ const d=$("howtoDots"); for(let i=0;i<3;i++){ const e=document.createElement("div"); e.className="d2"; d.appendChild(e);} })();
+const HOWTO_N = document.querySelectorAll("#howtoSlides .slide").length;
+let howtoI = 0;
+function renderHowto(){
+  [...$("howtoSlides").children].forEach((s,i)=>s.classList.toggle("on", i===howtoI));
+  [...$("howtoDots").children].forEach((d,i)=>d.classList.toggle("on", i===howtoI));
+  $("howtoPrev").style.visibility = howtoI===0 ? "hidden" : "visible";
+  $("howtoNext").textContent = howtoI===HOWTO_N-1 ? "got it" : "next";
+}
+function openHowto(){ howtoI=0; renderHowto(); $("howtoBack").classList.add("open"); $("howtoModal").style.display="block"; }
+function closeHowto(){ $("howtoBack").classList.remove("open"); $("howtoModal").style.display="none"; }
+$("howtoBtn").addEventListener("click",openHowto);
+$("closeHowto").addEventListener("click",closeHowto);
+$("howtoBack").addEventListener("click",closeHowto);
+$("howtoPrev").addEventListener("click",()=>{ if(howtoI>0){howtoI--;renderHowto();} });
+$("howtoNext").addEventListener("click",()=>{ if(howtoI<HOWTO_N-1){howtoI++;renderHowto();} else closeHowto(); });
 
 // ---- archive ----
 (function(){
@@ -624,8 +714,14 @@ $("closeArchive").addEventListener("click",closeArchive);
 $("archiveBack").addEventListener("click",closeArchive);
 
 document.addEventListener("keydown",e=>{
-  const modalOpen = $("infoModal").style.display==="block" || $("hintSheet").style.display==="block" || $("archiveModal").style.display==="block";
-  if(modalOpen){ if(e.key==="Escape"){closeInfo();closeHints();closeArchive();} return; }
+  const howtoOpen = $("howtoModal").style.display==="block";
+  const modalOpen = howtoOpen || $("hintSheet").style.display==="block" || $("archiveModal").style.display==="block";
+  if(modalOpen){
+    if(e.key==="Escape"){closeHowto();closeHints();closeArchive();}
+    else if(howtoOpen && e.key==="ArrowRight"){$("howtoNext").click();}
+    else if(howtoOpen && e.key==="ArrowLeft"){$("howtoPrev").click();}
+    return;
+  }
   if(finished) return;
   if(e.key==="Enter"){e.preventDefault();check();}
   else if(e.key==="Backspace"){e.preventDefault();delLetter();}
