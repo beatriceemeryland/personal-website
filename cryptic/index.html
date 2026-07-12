@@ -2,11 +2,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--
   ============================================================
-  YOUR OWN MINUTE-CRYPTIC-STYLE PUZZLE
+  BEATRICE'S CRYPTIC — with a dated archive
   ============================================================
-  To make a new puzzle for your friend, edit ONLY the PUZZLE
-  block in the <script> near the bottom of this file. Everything
-  is commented. Then send them this .html file (or the shared link).
+  Every puzzle lives in the PUZZLES object in the <script> near
+  the bottom, keyed by date (YYYY-MM-DD). The newest date shows
+  by default; older dates are reachable from the Archive button
+  and at /cryptic/?date=YYYY-MM-DD. To add a day, copy one entry
+  and change the date key + contents.
   ============================================================
 -->
 <title>Cryptic — a clue for you</title>
@@ -63,6 +65,7 @@
   .meta{flex:1;min-width:0}
   .meta .date{font-weight:bold;font-size:17px}
   .meta .by{font-size:13px;color:var(--muted);font-style:italic}
+  .archivebtn{font-size:15px;font-style:italic;font-weight:bold;flex:none}
 
   /* ---------- clue (borderless while playing) ---------- */
   .cluecard{
@@ -195,6 +198,15 @@
   .modal h2{margin:0 0 12px;font-size:23px}
   .modal p{font-size:15px;margin:0 0 12px}
   .modal .x{position:absolute;top:12px;right:14px}
+  #archiveList{max-height:56vh;overflow-y:auto;margin:0 -4px}
+  .arcitem{display:flex;justify-content:space-between;align-items:center;gap:12px;
+    text-decoration:none;color:var(--ink);padding:13px 6px;border-bottom:1px solid #eee}
+  .arcitem:hover{background:#f4f7fd}
+  .arcitem:last-child{border-bottom:none}
+  .arcitem .d{font-weight:bold;font-style:italic;font-size:17px}
+  .arcitem .tag{font-size:12px;color:var(--muted);font-style:italic;white-space:nowrap}
+  .arcitem.active{background:var(--panel)}
+  .arcitem:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
 
   .toast{
     position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
@@ -213,6 +225,7 @@
       <div class="date" id="date"></div>
       <div class="by" id="by"></div>
     </div>
+    <button class="iconbtn archivebtn" id="archiveBtn" aria-label="Archive" title="Archive">archive</button>
   </div>
 
   <div class="cluecard"><div class="clue" id="clue"></div></div>
@@ -267,47 +280,84 @@
   <p>Type your guess and hit <b>check</b>. Stuck? Tap <b>hints</b> and pick one — like golf, the goal is to solve in as few hints as you can. A hint lights up part of the clue: <span style="background:var(--def);padding:0 3px">blue</span> is the definition, <span style="background:var(--indicator);padding:0 3px">green</span> marks the indicators (words telling you what to do), and <span style="background:var(--yellow-soft);padding:0 3px">yellow</span> is the fodder (the raw material).</p>
 </div>
 
+<!-- archive -->
+<div class="backdrop" id="archiveBack"></div>
+<div class="modal" id="archiveModal" style="display:none" role="dialog" aria-label="Archive">
+  <button class="iconbtn x" id="closeArchive" aria-label="Close">&times;</button>
+  <h2>Archive</h2>
+  <p>Every clue, by date — free to play any time. Pick one:</p>
+  <div id="archiveList"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 /* ============================================================
-   THE PUZZLE — edit this to make your own.
+   THE PUZZLES — one entry per date (key = YYYY-MM-DD).
+   Newest date shows by default; older ones live in the Archive
+   and at /cryptic/?date=YYYY-MM-DD. Add a day by copying an
+   entry and changing the date key + contents.
+
+   clue segment roles:
+     "def"       -> the definition        (lights up BLUE)
+     "indicator" -> a wordplay instruction (lights up GREEN)
+     "fodder"    -> the raw letters/words  (lights up YELLOW)
+     "plain"     -> connecting words       (stays black)
+   answer: SPACE between words for multi-word answers.
    ============================================================ */
-const PUZZLE = {
-  by: "A clue from Beatrice",           // shown under the date
-  date: "Just for you",                 // any text you like
+const PUZZLES = {
 
-  // The clue, split into pieces so it can light up when a hint
-  // is taken (and when solved).
-  //   role: "def"       -> the definition          (lights up BLUE)
-  //         "indicator" -> a wordplay instruction   (lights up GREEN)
-  //         "fodder"    -> the raw letters/words    (lights up YELLOW)
-  //         "plain"     -> connecting words         (stays black)
-  clue: [
-    { text: "Tracks",     role: "def" },
-    { text: "that the",   role: "plain" },
-    { text: "liar",       role: "fodder" },
-    { text: "reflected",  role: "indicator" },
-    { text: "before the", role: "indicator" },
-    { text: "street",     role: "fodder" }
-  ],
-
-  // The answer. Use a SPACE between words for multi-word answers
-  // (e.g. "TOP HAT" reads "(3,3)" and shows a gap in the grid).
-  answer: "RAILROAD",
-
-  par: 2,   // how many hints counts as "par" (a good solve)
-
-  // The three hints. Each lights up its part of the clue when shown.
-  hints: {
-    definition: "The definition here is &lsquo;Tracks&rsquo;, and the answer will be a word for that.",
-    indicator:  "There are two indicators. &lsquo;Reflected&rsquo; tells you to reverse the letters of something; &lsquo;before the&rsquo; tells you to place one piece in front of another.",
-    fodder:     "The fodder &mdash; the raw words to work on &mdash; is &lsquo;liar&rsquo; and &lsquo;street&rsquo;. Reverse LIAR, and think of another word for a street."
+  // -------------------- 12 July 2026 (today) --------------------
+  "2026-07-12": {
+    date: "12 July 2026",
+    by: "A clue from Beatrice",
+    clue: [
+      { text: "Wicked",      role: "def" },
+      { text: "nun",         role: "fodder" },
+      { text: "swallows",    role: "indicator" },
+      { text: "ends of",     role: "indicator" },
+      { text: "gin martini", role: "fodder" }
+    ],
+    answer: "SINISTER",
+    par: 2,
+    hints: {
+      definition: "The definition here is &lsquo;Wicked&rsquo;, and the answer will be a word for that.",
+      indicator:  "Two indicators. &lsquo;Swallows&rsquo; means one part wraps around (contains) another; &lsquo;ends of&rsquo; means take the last letter(s) of what follows.",
+      fodder:     "The fodder is &lsquo;nun&rsquo; &mdash; think of a word for one &mdash; and &lsquo;gin martini&rsquo;. Take the ends of the drink and slip them inside the nun."
+    },
+    explanation: "SISTER (a &lsquo;nun&rsquo;) swallows NI &mdash; the ends of &lsquo;giN martinI&rsquo; &mdash; giving SI&middot;NI&middot;STER = SINISTER, meaning &lsquo;Wicked&rsquo;."
   },
 
-  // Shown after solving or revealing.
-  explanation: "RAIL (LIAR &lsquo;reflected&rsquo;, i.e. reversed) + ROAD (&lsquo;the street&rsquo;) = RAILROAD &mdash; the &lsquo;Tracks&rsquo;."
+  // -------------------- 11 July 2026 --------------------
+  "2026-07-11": {
+    date: "11 July 2026",
+    by: "A clue from Beatrice",
+    clue: [
+      { text: "Tracks",     role: "def" },
+      { text: "that the",   role: "plain" },
+      { text: "liar",       role: "fodder" },
+      { text: "reflected",  role: "indicator" },
+      { text: "before the", role: "indicator" },
+      { text: "street",     role: "fodder" }
+    ],
+    answer: "RAILROAD",
+    par: 2,
+    hints: {
+      definition: "The definition here is &lsquo;Tracks&rsquo;, and the answer will be a word for that.",
+      indicator:  "There are two indicators. &lsquo;Reflected&rsquo; tells you to reverse the letters of something; &lsquo;before the&rsquo; tells you to place one piece in front of another.",
+      fodder:     "The fodder &mdash; the raw words to work on &mdash; is &lsquo;liar&rsquo; and &lsquo;street&rsquo;. Reverse LIAR, and think of another word for a street."
+    },
+    explanation: "RAIL (LIAR &lsquo;reflected&rsquo;, i.e. reversed) + ROAD (&lsquo;the street&rsquo;) = RAILROAD &mdash; the &lsquo;Tracks&rsquo;."
+  }
+
 };
+
+/* ---- pick which puzzle to show: ?date=YYYY-MM-DD, else newest ---- */
+const DATES = Object.keys(PUZZLES).sort().reverse();   // newest first
+const _wantDate = new URLSearchParams(location.search).get("date");
+const activeDate = (_wantDate && PUZZLES[_wantDate]) ? _wantDate : DATES[0];
+const PUZZLE = PUZZLES[activeDate];
+
 /* ============================================================
    You shouldn't need to edit below here.
    ============================================================ */
@@ -548,8 +598,28 @@ $("closeInfo").addEventListener("click",closeInfo);
 $("infoBack").addEventListener("click",closeInfo);
 function closeInfo(){$("infoBack").classList.remove("open");$("infoModal").style.display="none";}
 
+// ---- archive ----
+(function(){
+  const list=$("archiveList");
+  DATES.forEach(d=>{
+    const p=PUZZLES[d];
+    const a=document.createElement("a");
+    a.className="arcitem"+(d===activeDate?" active":"");
+    a.href="?date="+d;
+    const tag = d===activeDate ? "now playing" : (d===DATES[0] ? "latest" : "");
+    a.innerHTML=`<span class="d">${p.date}</span><span class="tag">${tag}</span>`;
+    list.appendChild(a);
+  });
+})();
+function openArchive(){ $("archiveBack").classList.add("open"); $("archiveModal").style.display="block"; }
+function closeArchive(){ $("archiveBack").classList.remove("open"); $("archiveModal").style.display="none"; }
+$("archiveBtn").addEventListener("click",openArchive);
+$("closeArchive").addEventListener("click",closeArchive);
+$("archiveBack").addEventListener("click",closeArchive);
+
 document.addEventListener("keydown",e=>{
-  if($("infoModal").style.display==="block"||$("hintSheet").style.display==="block"){ if(e.key==="Escape"){closeInfo();closeHints();} return; }
+  const modalOpen = $("infoModal").style.display==="block" || $("hintSheet").style.display==="block" || $("archiveModal").style.display==="block";
+  if(modalOpen){ if(e.key==="Escape"){closeInfo();closeHints();closeArchive();} return; }
   if(finished) return;
   if(e.key==="Enter"){e.preventDefault();check();}
   else if(e.key==="Backspace"){e.preventDefault();delLetter();}
