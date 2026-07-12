@@ -49,9 +49,11 @@
     color:var(--ink);
     font-family:var(--serif);
     -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%;
     line-height:1.45;
     min-height:100dvh;
     display:flex;flex-direction:column;
+    touch-action:manipulation;      /* disable double-tap-to-zoom; pinch-zoom still works */
   }
   .wrap{width:100%;max-width:600px;margin:0 auto;padding:0 18px;flex:1}
 
@@ -141,10 +143,14 @@
     flex:1 1 0;min-width:0;font-family:var(--serif);font-size:16px;
     background:var(--card);border:1.5px solid var(--keyline);border-radius:7px;
     padding:14px 0;cursor:pointer;color:#2a2f3a;text-transform:uppercase;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+    -webkit-user-select:none;user-select:none;
   }
   .key.wide{flex:1.5 1 0}
   .key:active{background:#e7edf9}
   .key:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+  /* every tappable control: snappy taps, no zoom, no grey flash */
+  .pill,.iconbtn,.hintopt,.arcitem{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 
   /* ---------- solved result + unpack ---------- */
   .result{
