@@ -623,8 +623,17 @@ function showResult(solved){
 }
 
 function plainClue(){ return PUZZLE.clue.map(s=>s.text).join(" "); }
+function shareLine(){
+  const L = {
+    0: "Solved with 0 hints — totally rocket 🚀",
+    1: "Solved with 1 hint — I popped off! 🍾",
+    2: "Solved with 2 hints — IT'S TRICKY 🕺",
+    3: "Solved with 3 hints — signing up for a LinkedIn learning course 🤓"
+  };
+  return L[strokes] || ("Solved with "+strokes+" hints — enrolling in night school 📚");
+}
 function shareText(){
-  return "🧩 Cryptic\n"+plainClue()+" "+enumStr+"\nSolved with "+strokes+" hint"+(strokes===1?"":"s")+" — "+scoreText();
+  return "🐝 Bea's Cryptic\n"+plainClue()+" "+enumStr+"\n"+shareLine();
 }
 async function doShare(){
   const text = shareText();
