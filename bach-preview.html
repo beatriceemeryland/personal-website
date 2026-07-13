@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blush:      #f5ddd9;
+      --blush-deep: #efcfc9;
+      --card:       #fbebe7;
+      --card-soft:  #f7e2dd;
+      --rose:       #c15b4d;
+      --rose-mute:  #cf8378;
+      --ink:        #3a221e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 1200px; height: 630px; overflow: hidden; }
+
+    .canvas {
+      position: relative;
+      width: 1200px;
+      height: 630px;
+      background: radial-gradient(120% 100% at 50% 0%, var(--card) 0%, var(--card-soft) 55%, var(--blush-deep) 100%);
+      font-family: 'Poppins', sans-serif;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .frame { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .frame path { fill: none; stroke: var(--rose); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+
+    .bow { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 150px; filter: drop-shadow(0 6px 8px rgba(120,50,40,.18)); }
+
+    .bee { width: 156px; height: auto; overflow: visible; margin-bottom: 16px; }
+
+    .eyebrow {
+      font-family: 'Great Vibes', cursive;
+      font-size: 58px;
+      line-height: 1;
+      font-weight: 400;
+      color: var(--rose-mute);
+    }
+    .title {
+      font-family: 'Great Vibes', cursive;
+      color: var(--rose);
+      font-size: 112px;
+      line-height: 1.02;
+      font-weight: 400;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <svg class="frame" preserveAspectRatio="none"><path id="wavy"></path></svg>
+
+    <svg class="bow" viewBox="0 0 140 90" aria-hidden="true">
+      <g fill="none" stroke="#c15b4d" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M70 40 C48 16 8 14 12 40 C8 66 46 66 70 44" fill="#f7d9d3"/>
+        <path d="M70 40 C92 16 132 14 128 40 C132 66 94 66 70 44" fill="#f7d9d3"/>
+        <path d="M62 36 C66 32 74 32 78 36 C80 40 80 46 78 50 C74 54 66 54 62 50 C60 46 60 40 62 36 Z" fill="#f2c7bf"/>
+        <path d="M64 52 C58 66 52 78 44 88"/>
+        <path d="M76 52 C82 66 88 78 96 88"/>
+      </g>
+    </svg>
+
+    <svg class="bee" viewBox="0 0 260 262" aria-hidden="true">
+      <g>
+        <path d="M140 106 C150 84 142 72 124 76 C92 82 58 116 40 164 C27 196 22 224 26 246 C34 238 42 238 50 246 C58 236 66 236 74 246 C82 236 90 236 98 246 C106 238 114 238 120 244 C118 198 122 150 140 106 Z"
+              fill="#fffaf7" fill-opacity="0.72" stroke="#ecccc1" stroke-width="2"/>
+        <path d="M126 84 C96 122 62 172 44 226" fill="none" stroke="#efd3c9" stroke-width="1.3" opacity="0.85"/>
+        <path d="M134 90 C112 130 86 178 72 230" fill="none" stroke="#efd3c9" stroke-width="1.3" opacity="0.7"/>
+      </g>
+      <g fill="#fffaf7" stroke="#1f1a17" stroke-width="4.5" stroke-linejoin="round">
+        <path d="M118 108 C96 74 60 72 58 100 C56 124 88 136 118 124 Z"/>
+        <path d="M120 108 C112 72 78 56 66 78 C56 98 90 126 120 124 Z"/>
+      </g>
+      <g>
+        <path d="M74 184 C56 192 48 202 44 212 C58 212 70 206 82 196 Z" fill="#1f1a17"/>
+        <ellipse cx="140" cy="174" rx="70" ry="52" fill="#f5c85a" stroke="#1f1a17" stroke-width="6"/>
+        <clipPath id="bodyClip"><ellipse cx="140" cy="174" rx="67" ry="49"/></clipPath>
+        <g clip-path="url(#bodyClip)" fill="#1f1a17">
+          <path d="M96 116 q10 58 0 116 q14 4 24 0 q-10 -58 0 -116 q-12 -4 -24 0 Z"/>
+          <path d="M140 112 q10 62 0 124 q14 4 26 0 q-10 -62 0 -124 q-13 -4 -26 0 Z"/>
+          <path d="M186 120 q8 54 0 108 q10 3 18 -1 q-8 -53 0 -106 q-9 -3 -18 -1 Z"/>
+        </g>
+        <circle cx="188" cy="166" r="6.5" fill="#1f1a17"/>
+      </g>
+      <g fill="none" stroke="#1f1a17" stroke-width="4.5" stroke-linecap="round">
+        <path d="M182 132 C196 112 208 108 216 96"/>
+        <path d="M170 128 C178 106 186 98 190 84"/>
+        <circle cx="217" cy="94" r="5" fill="#1f1a17"/>
+        <circle cx="191" cy="82" r="5" fill="#1f1a17"/>
+      </g>
+      <g>
+        <path d="M120 124 C136 110 158 110 172 124" fill="none" stroke="#e6c4b8" stroke-width="3.4" stroke-linecap="round"/>
+        <circle cx="127" cy="121" r="3.8" fill="#fffaf7" stroke="#e6c4b8" stroke-width="1.5"/>
+        <circle cx="139" cy="115" r="3.8" fill="#fffaf7" stroke="#e6c4b8" stroke-width="1.5"/>
+        <circle cx="152" cy="115" r="3.8" fill="#fffaf7" stroke="#e6c4b8" stroke-width="1.5"/>
+        <circle cx="164" cy="121" r="3.8" fill="#fffaf7" stroke="#e6c4b8" stroke-width="1.5"/>
+      </g>
+    </svg>
+
+    <p class="eyebrow">your availability is requested for</p>
+    <h1 class="title">beatrice land's bachelorette</h1>
+  </div>
+
+  <script>
+    function wobbleEdge(x0, y0, x1, y1, amp, wavelen) {
+      const dx = x1 - x0, dy = y1 - y0, len = Math.hypot(dx, dy);
+      const ux = dx / len, uy = dy / len, nx = -uy, ny = ux;
+      const humps = Math.max(2, Math.round(len / wavelen)), step = len / humps;
+      let d = "";
+      for (let i = 0; i < humps; i++) {
+        const midT = (i + 0.5) * step, endT = (i + 1) * step, sign = i % 2 === 0 ? 1 : -1;
+        const cx = x0 + ux * midT + nx * amp * sign, cy = y0 + uy * midT + ny * amp * sign;
+        const ex = x0 + ux * endT, ey = y0 + uy * endT;
+        d += ` Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`;
+      }
+      return d;
+    }
+    (function drawFrame() {
+      const w = 1200, h = 630, m = 26, r = 40, amp = 7, wl = 58;
+      const L = m, T = m, R = w - m, B = h - m;
+      let d = `M ${L + r} ${T}`;
+      d += wobbleEdge(L + r, T, R - r, T, amp, wl);
+      d += ` Q ${R} ${T} ${R} ${T + r}`;
+      d += wobbleEdge(R, T + r, R, B - r, amp, wl);
+      d += ` Q ${R} ${B} ${R - r} ${B}`;
+      d += wobbleEdge(R - r, B, L + r, B, amp, wl);
+      d += ` Q ${L} ${B} ${L} ${B - r}`;
+      d += wobbleEdge(L, B - r, L, T + r, amp, wl);
+      d += ` Q ${L} ${T} ${L + r} ${T} Z`;
+      document.getElementById("wavy").setAttribute("d", d);
+      document.querySelector(".frame").setAttribute("viewBox", `0 0 ${w} ${h}`);
+    })();
+  </script>
+</body>
+</html>
