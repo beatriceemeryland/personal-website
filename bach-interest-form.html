@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bride to Bea — Bachelorette Interest Form</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:title" content="Bride to Bea">
+  <meta property="og:description" content="Help pick a weekend for Bea's bachelorette — let me know which dates you can make!">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐝</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Blush + rose palette pulled from the invite */
+      --blush:        #f5ddd9;
+      --blush-deep:   #efcfc9;
+      --card:         #fbebe7;
+      --card-soft:    #f7e2dd;
+      --rose:         #c15b4d;   /* wavy border / script ink */
+      --rose-deep:    #a8493d;
+      --rose-mute:    #cf8378;
+      --honey:        #f2c14e;
+      --honey-deep:   #e0a838;
+      --ink:          #3a221e;
+      --ink-soft:     #7a5952;
+      --veil:         #fffaf7;
+    }
+
+    * , *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-size: 16px; }
+
+    body {
+      min-height: 100dvh;
+      background:
+        radial-gradient(120% 90% at 50% -10%, #fbe7e2 0%, var(--blush) 45%, var(--blush-deep) 100%);
+      font-family: 'Poppins', sans-serif;
+      color: var(--ink);
+      display: flex;
+      justify-content: center;
+      padding: clamp(14px, 4vw, 48px);
+    }
+
+    /* ---- Card + wavy frame ---- */
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 620px;
+      background:
+        radial-gradient(140% 100% at 50% 0%, var(--card) 0%, var(--card-soft) 100%);
+      border-radius: 34px;
+      padding: clamp(40px, 7vw, 68px) clamp(26px, 6vw, 58px) clamp(34px, 6vw, 52px);
+      box-shadow: 0 30px 70px -34px rgba(120, 50, 40, 0.5);
+    }
+
+    .frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 2;
+    }
+    .frame path {
+      fill: none;
+      stroke: var(--rose);
+      stroke-width: 3.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Bow sits over the top of the wavy frame */
+    .bow {
+      position: absolute;
+      top: clamp(-30px, -5vw, -22px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(96px, 22vw, 132px);
+      height: auto;
+      z-index: 3;
+      filter: drop-shadow(0 6px 8px rgba(120, 50, 40, 0.18));
+    }
+
+    /* ---- Header ---- */
+    .eyebrow {
+      text-align: center;
+      font-size: clamp(.66rem, 2vw, .74rem);
+      letter-spacing: .42em;
+      text-transform: uppercase;
+      color: var(--rose-mute);
+      font-weight: 500;
+      margin-bottom: 6px;
+      padding-left: .42em;
+    }
+    .title {
+      font-family: 'Great Vibes', cursive;
+      text-align: center;
+      color: var(--rose);
+      font-size: clamp(2.5rem, 11.5vw, 4.4rem);
+      line-height: 1.05;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .bee-wrap { display: flex; justify-content: center; margin: 10px 0 4px; }
+    .bee { width: clamp(120px, 34vw, 172px); height: auto; overflow: visible; }
+
+    .intro {
+      text-align: center;
+      max-width: 44ch;
+      margin: 6px auto clamp(24px, 5vw, 34px);
+      font-size: clamp(.94rem, 2.6vw, 1.02rem);
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+    .intro strong { font-weight: 500; color: var(--rose-deep); }
+
+    /* ---- Form ---- */
+    .field { margin-bottom: 20px; }
+    .field > label {
+      display: block;
+      font-size: .82rem;
+      letter-spacing: .04em;
+      color: var(--rose-deep);
+      font-weight: 500;
+      margin-bottom: 7px;
+      padding-left: 2px;
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 460px) { .row { grid-template-columns: 1fr; gap: 0; } .row .field { margin-bottom: 20px; } }
+
+    input[type="text"], input[type="email"], textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.55);
+      border: 1.6px solid var(--rose-mute);
+      border-radius: 14px;
+      padding: 12px 15px;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    input::placeholder, textarea::placeholder { color: #c7a49c; font-weight: 300; }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--rose);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(193, 91, 77, 0.14);
+    }
+    textarea { resize: vertical; min-height: 88px; line-height: 1.55; }
+
+    /* Section heading for the dates */
+    .dates-head { text-align: center; margin: clamp(20px, 5vw, 30px) 0 4px; }
+    .dates-head .kicker {
+      font-size: .74rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--rose-mute); font-weight: 500;
+    }
+    .dates-head h2 {
+      font-family: 'Great Vibes', cursive;
+      color: var(--rose);
+      font-weight: 400;
+      font-size: clamp(2rem, 8vw, 2.7rem);
+      line-height: 1.05;
+    }
+    .dates-sub {
+      text-align: center; font-size: .9rem; font-weight: 300; color: var(--ink-soft);
+      margin-bottom: 18px;
+    }
+
+    /* Date rows — check the weekends you can make */
+    .dates { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
+    .date-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1.6px solid var(--rose-mute);
+      border-radius: 16px;
+      padding: 13px 16px;
+      cursor: pointer;
+      transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .12s ease;
+    }
+    .date-row:hover { border-color: var(--rose); background: rgba(255, 255, 255, 0.7); }
+    .date-row:has(input:checked) {
+      border-color: var(--rose);
+      background: #fff;
+      box-shadow: 0 8px 20px -12px rgba(168, 73, 61, 0.55);
+    }
+    .date-row input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .checkbox {
+      flex: none;
+      width: 26px; height: 26px;
+      border: 2px solid var(--rose);
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      transition: background .16s ease;
+    }
+    .checkbox svg { width: 16px; height: 16px; opacity: 0; transform: scale(.5); transition: opacity .16s ease, transform .16s ease; }
+    .date-row input:checked + .checkbox { background: var(--rose); }
+    .date-row input:checked + .checkbox svg { opacity: 1; transform: scale(1); }
+    .date-row input:focus-visible + .checkbox { box-shadow: 0 0 0 4px rgba(193, 91, 77, 0.22); }
+    .date-copy { display: flex; flex-direction: column; }
+    .date-copy .d-main { font-size: 1.06rem; font-weight: 500; color: var(--ink); letter-spacing: .01em; }
+    .date-copy .d-sub { font-size: .78rem; font-weight: 300; color: var(--ink-soft); letter-spacing: .04em; }
+
+    .cant-make { margin-top: 4px; }
+    .cant-make .date-row { background: transparent; border-style: dashed; }
+    .cant-make .date-copy .d-main { font-weight: 400; font-style: italic; color: var(--ink-soft); }
+
+    /* Submit */
+    .submit-wrap { margin-top: 26px; text-align: center; }
+    button.submit {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      color: #fff;
+      background: linear-gradient(180deg, var(--rose) 0%, var(--rose-deep) 100%);
+      border: none;
+      border-radius: 999px;
+      padding: 15px 46px;
+      cursor: pointer;
+      box-shadow: 0 12px 26px -12px rgba(168, 73, 61, 0.7);
+      transition: transform .12s ease, box-shadow .18s ease, filter .18s ease;
+    }
+    button.submit:hover { transform: translateY(-2px); box-shadow: 0 18px 32px -14px rgba(168, 73, 61, 0.75); }
+    button.submit:active { transform: translateY(0); }
+    button.submit:disabled { filter: saturate(.5) opacity(.7); cursor: default; transform: none; }
+    .fine { margin-top: 14px; font-size: .76rem; font-weight: 300; color: var(--ink-soft); }
+    .err { color: var(--rose-deep); font-weight: 400; font-size: .85rem; margin-top: 12px; min-height: 1em; }
+
+    /* Thank-you state */
+    .thanks { display: none; text-align: center; padding: 20px 4px 8px; }
+    .thanks.show { display: block; animation: rise .5s ease both; }
+    .thanks .th-bee { width: 120px; margin: 0 auto 8px; }
+    .thanks h2 { font-family: 'Great Vibes', cursive; color: var(--rose); font-size: clamp(2.4rem, 9vw, 3.2rem); font-weight: 400; line-height: 1; }
+    .thanks p { font-weight: 300; color: var(--ink-soft); margin-top: 8px; font-size: 1rem; }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+
+    /* Dev notice if the Google Form isn't wired up yet */
+    .devnote {
+      display: none;
+      margin: 0 0 22px;
+      padding: 12px 15px;
+      border: 1.4px dashed var(--rose-mute);
+      border-radius: 12px;
+      background: rgba(255,255,255,.4);
+      font-size: .8rem; font-weight: 300; color: var(--ink-soft); line-height: 1.5;
+    }
+    .devnote.show { display: block; }
+    .devnote code { background: rgba(168,73,61,.1); padding: 1px 5px; border-radius: 5px; font-size: .92em; }
+  </style>
+</head>
+<body>
+  <main class="card" aria-labelledby="page-title">
+    <!-- Wavy rose frame (path drawn by JS to fit the card at any size) -->
+    <svg class="frame" preserveAspectRatio="none" aria-hidden="true"><path id="wavy"></path></svg>
+
+    <!-- Hand-drawn bow over the top of the frame -->
+    <svg class="bow" viewBox="0 0 140 90" aria-hidden="true">
+      <g fill="none" stroke="#c15b4d" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- left loop -->
+        <path d="M70 40 C48 16 8 14 12 40 C8 66 46 66 70 44" fill="#f7d9d3"/>
+        <!-- right loop -->
+        <path d="M70 40 C92 16 132 14 128 40 C132 66 94 66 70 44" fill="#f7d9d3"/>
+        <!-- knot -->
+        <path d="M62 36 C66 32 74 32 78 36 C80 40 80 46 78 50 C74 54 66 54 62 50 C60 46 60 40 62 36 Z" fill="#f2c7bf"/>
+        <!-- tails -->
+        <path d="M64 52 C58 66 52 78 44 88"/>
+        <path d="M76 52 C82 66 88 78 96 88"/>
+      </g>
+    </svg>
+
+    <!-- ===== FORM ===== -->
+    <form id="rsvp" novalidate>
+      <h1 class="title" id="page-title">the bride to bea</h1>
+
+      <div class="bee-wrap">
+        <!-- Bee in a veil -->
+        <svg class="bee" viewBox="0 0 260 262" role="img" aria-label="A cartoon bee wearing a bridal veil">
+          <!-- Veil: attaches at the comb, sweeps up over the head, then cascades DOWN the BACK (left) of the bee -->
+          <g>
+            <path d="M140 106
+                     C150 84 142 72 124 76
+                     C92 82 58 116 40 164
+                     C27 196 22 224 26 246
+                     C34 238 42 238 50 246
+                     C58 236 66 236 74 246
+                     C82 236 90 236 98 246
+                     C106 238 114 238 120 244
+                     C118 198 122 150 140 106 Z"
+                  fill="#fffaf7" fill-opacity="0.72" stroke="#ecccc1" stroke-width="2"/>
+            <path d="M126 84 C96 122 62 172 44 226" fill="none" stroke="#efd3c9" stroke-width="1.3" opacity="0.85"/>
+            <path d="M134 90 C112 130 86 178 72 230" fill="none" stroke="#efd3c9" stroke-width="1.3" opacity="0.7"/>
+          </g>
+
+          <!-- Wings -->
+          <g fill="#fffaf7" stroke="#1f1a17" stroke-width="4.5" stroke-linejoin="round">
+            <path d="M118 108 C96 74 60 72 58 100 C56 124 88 136 118 124 Z"/>
+            <path d="M120 108 C112 72 78 56 66 78 C56 98 90 126 120 124 Z"/>
+          </g>
+
+          <!-- Body -->
+          <g>
+            <!-- stinger -->
+            <path d="M74 184 C56 192 48 202 44 212 C58 212 70 206 82 196 Z" fill="#1f1a17"/>
+            <!-- main body -->
+            <ellipse cx="140" cy="174" rx="70" ry="52" fill="#f5c85a" stroke="#1f1a17" stroke-width="6"/>
+            <!-- honey/black stripes, clipped to body -->
+            <clipPath id="bodyClip"><ellipse cx="140" cy="174" rx="67" ry="49"/></clipPath>
+            <g clip-path="url(#bodyClip)" fill="#1f1a17">
+              <path d="M96 116 q10 58 0 116 q14 4 24 0 q-10 -58 0 -116 q-12 -4 -24 0 Z"/>
+              <path d="M140 112 q10 62 0 124 q14 4 26 0 q-10 -62 0 -124 q-13 -4 -26 0 Z"/>
+              <path d="M186 120 q8 54 0 108 q10 3 18 -1 q-8 -53 0 -106 q-9 -3 -18 -1 Z"/>
+            </g>
+            <!-- eye -->
+            <circle cx="188" cy="166" r="6.5" fill="#1f1a17"/>
+          </g>
+
+          <!-- Antennae -->
+          <g fill="none" stroke="#1f1a17" stroke-width="4.5" stroke-linecap="round">
+            <path d="M182 132 C196 112 208 108 216 96"/>
+            <path d="M170 128 C178 106 186 98 190 84"/>
+            <circle cx="217" cy="94" r="5" fill="#1f1a17"/>
+            <circle cx="191" cy="82" r="5" fill="#1f1a17"/>
+          </g>
+
+          <!-- Veil comb sitting ON the bee's head — shows where the veil attaches -->
+          <g>
+            <path d="M120 124 C136 110 158 110 172 124" fill="none" stroke="#e6c4b8" stroke-width="3.4" stroke-linecap="round"/>
+            <circle cx="127" cy="121" r="3.8" fill="#fffaf7" stroke="#e6c4b8" stroke-width="1.5"/>
+            <circle cx="139" cy="115" r="3.8" fill="#fffaf7" stroke="#e6c4b8" stroke-width="1.5"/>
+            <circle cx="152" cy="115" r="3.8" fill="#fffaf7" stroke="#e6c4b8" stroke-width="1.5"/>
+            <circle cx="164" cy="121" r="3.8" fill="#fffaf7" stroke="#e6c4b8" stroke-width="1.5"/>
+          </g>
+        </svg>
+      </div>
+
+      <p class="intro">
+        Wade and I may be waiting to get married, but I can't wait to celebrate with all of you.
+        <strong>This is not a commitment — just gauging availability.</strong>
+        The more dates you can select the better, but I understand you all have busy lives.
+      </p>
+
+      <div class="devnote" id="devnote">
+        <strong>Heads up (only you see this):</strong> the Google Form isn't connected yet.
+        Fill in <code>FORM_CONFIG</code> at the bottom of this file with your form's action URL and
+        <code>entry.####</code> field IDs, and this notice disappears.
+      </div>
+
+      <!-- Name + email -->
+      <div class="row">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" placeholder="First & last" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@email.com" autocomplete="email" required>
+        </div>
+      </div>
+
+      <!-- Dates -->
+      <div class="dates-head">
+        <span class="kicker">check all you can make</span>
+        <h2>Which weekend?</h2>
+      </div>
+      <p class="dates-sub">All options are Friday&ndash;Sunday in 2027.</p>
+
+      <ul class="dates" id="dates">
+        <li>
+          <label class="date-row">
+            <input type="checkbox" name="dates" value="February 5–7, 2027">
+            <span class="checkbox"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="date-copy"><span class="d-main">February 5–7</span></span>
+          </label>
+        </li>
+        <li>
+          <label class="date-row">
+            <input type="checkbox" name="dates" value="February 26–28, 2027">
+            <span class="checkbox"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="date-copy"><span class="d-main">February 26–28</span></span>
+          </label>
+        </li>
+        <li>
+          <label class="date-row">
+            <input type="checkbox" name="dates" value="March 5–7, 2027">
+            <span class="checkbox"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="date-copy"><span class="d-main">March 5–7</span></span>
+          </label>
+        </li>
+        <li>
+          <label class="date-row">
+            <input type="checkbox" name="dates" value="March 19–21, 2027">
+            <span class="checkbox"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="date-copy"><span class="d-main">March 19–21</span></span>
+          </label>
+        </li>
+        <li class="cant-make">
+          <label class="date-row">
+            <input type="checkbox" name="dates" value="Can't make any of these">
+            <span class="checkbox"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="date-copy"><span class="d-main">None of these work for me</span></span>
+          </label>
+        </li>
+      </ul>
+
+      <!-- More info -->
+      <div class="field" style="margin-top:22px">
+        <label for="notes">Anything else? (constraints, preferences, ideas)</label>
+        <textarea id="notes" name="notes" placeholder="e.g. I am booked all of 2027, we must play the question game, I am allergic to bell peppers"></textarea>
+      </div>
+
+      <div class="submit-wrap">
+        <button type="submit" class="submit" id="submitBtn">SEND IT</button>
+        <div class="err" id="err" role="alert"></div>
+        <p class="fine">Your answers go straight to Bea — no one else sees them.</p>
+      </div>
+    </form>
+
+    <!-- ===== THANK YOU ===== -->
+    <div class="thanks" id="thanks" role="status">
+      <div class="th-bee" aria-hidden="true" style="font-size:64px;line-height:1">🐝</div>
+      <h2>Yay — got it!</h2>
+      <p id="thanksMsg">Thank you, love. I'll be in touch once the votes are in. 🐝💕</p>
+    </div>
+  </main>
+
+  <script>
+    /* =========================================================================
+       1) GOOGLE FORM CONFIG  —  fill these in to go live (see setup notes).
+          - action:  your form's POST url, ends in /formResponse
+          - entries: the entry.#### id for each question
+       ========================================================================= */
+    const FORM_CONFIG = {
+      action: "https://docs.google.com/forms/d/e/1FAIpQLScMwT5lDEkt0mZaPlGanDqg9mv58r-QOYKqxledQFCesb8vDg/formResponse",
+      entries: {
+        name:  "entry.1597261623",
+        email: "entry.1353746313",
+        dates: "entry.1691188282",         // the checkbox question
+        notes: "entry.1706547793"
+      }
+    };
+
+    /* ========================================================================= */
+    const $ = (s) => document.querySelector(s);
+    const form = $("#rsvp");
+    const errEl = $("#err");
+    const btn = $("#submitBtn");
+
+    const isConfigured = () =>
+      FORM_CONFIG.action.startsWith("http") &&
+      !Object.values(FORM_CONFIG.entries).some(v => v.includes("_ID"));
+
+    if (!isConfigured()) $("#devnote").classList.add("show");
+
+    /* ---- Draw the wavy rose frame to fit the card at any size ---- */
+    const card = $(".card");
+    const wavy = $("#wavy");
+
+    function wobbleEdge(x0, y0, x1, y1, amp, wavelen) {
+      // returns quadratic-bezier segments from (x0,y0)->(x1,y1) with a sine wobble
+      const dx = x1 - x0, dy = y1 - y0;
+      const len = Math.hypot(dx, dy);
+      const ux = dx / len, uy = dy / len;      // unit along edge
+      const nx = -uy, ny = ux;                  // unit normal (outward for CW-ish walk)
+      const humps = Math.max(2, Math.round(len / wavelen));
+      const step = len / humps;
+      let d = "";
+      for (let i = 0; i < humps; i++) {
+        const midT = (i + 0.5) * step;
+        const endT = (i + 1) * step;
+        const sign = i % 2 === 0 ? 1 : -1;
+        const cx = x0 + ux * midT + nx * amp * sign;
+        const cy = y0 + uy * midT + ny * amp * sign;
+        const ex = x0 + ux * endT;
+        const ey = y0 + uy * endT;
+        d += ` Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}`;
+      }
+      return d;
+    }
+
+    function drawFrame() {
+      const w = card.clientWidth;
+      const h = card.clientHeight;
+      const svg = $(".frame");
+      svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+      const m = 16;          // inset from card edge
+      const r = 30;          // corner radius
+      const amp = 5.5;       // wave height
+      const wl = 46;         // wavelength
+      const L = m, T = m, R = w - m, B = h - m;
+
+      let d = `M ${L + r} ${T}`;
+      d += wobbleEdge(L + r, T, R - r, T, amp, wl);        // top
+      d += ` Q ${R} ${T} ${R} ${T + r}`;                    // TR corner
+      d += wobbleEdge(R, T + r, R, B - r, amp, wl);         // right
+      d += ` Q ${R} ${B} ${R - r} ${B}`;                    // BR corner
+      d += wobbleEdge(R - r, B, L + r, B, amp, wl);         // bottom
+      d += ` Q ${L} ${B} ${L} ${B - r}`;                    // BL corner
+      d += wobbleEdge(L, B - r, L, T + r, amp, wl);         // left
+      d += ` Q ${L} ${T} ${L + r} ${T}`;                    // TL corner
+      d += " Z";
+      wavy.setAttribute("d", d);
+    }
+
+    drawFrame();
+    if (window.ResizeObserver) new ResizeObserver(drawFrame).observe(card);
+    window.addEventListener("load", drawFrame);
+
+    /* ---- "None of these" is mutually exclusive with the real dates ---- */
+    const boxes = [...document.querySelectorAll('input[name="dates"]')];
+    const noneBox = boxes.find(b => b.value.startsWith("Can't"));
+    boxes.forEach(b => b.addEventListener("change", () => {
+      if (b === noneBox && b.checked) boxes.filter(x => x !== noneBox).forEach(x => x.checked = false);
+      else if (b !== noneBox && b.checked) noneBox.checked = false;
+    }));
+
+    /* ---- Submit ---- */
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errEl.textContent = "";
+
+      const name = $("#name").value.trim();
+      const email = $("#email").value.trim();
+      const checked = boxes.filter(b => b.checked);
+
+      if (!name) return fail("Please add your name so I know who this is 🐝");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("Please pop in a valid email.");
+      if (checked.length === 0) return fail("Pick at least one weekend — or tick “None of these.”");
+
+      btn.disabled = true;
+      btn.textContent = "Sending…";
+
+      if (!isConfigured()) {
+        // Preview mode: show the thank-you so you can see the flow before wiring Google.
+        console.warn("[bride-to-bea] FORM_CONFIG not set — preview only, nothing was saved.");
+        return succeed();
+      }
+
+      try {
+        const body = new URLSearchParams();
+        body.append(FORM_CONFIG.entries.name, name);
+        body.append(FORM_CONFIG.entries.email, email);
+        body.append(FORM_CONFIG.entries.notes, $("#notes").value.trim());
+        checked.forEach(b => body.append(FORM_CONFIG.entries.dates, b.value));
+
+        await fetch(FORM_CONFIG.action, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body
+        });
+        succeed();
+      } catch (_) {
+        btn.disabled = false;
+        btn.textContent = "SEND IT";
+        fail("Hmm, that didn't send. Check your connection and try again?");
+      }
+    });
+
+    function fail(msg) { errEl.textContent = msg; return false; }
+    function succeed() {
+      form.style.display = "none";
+      $("#thanks").classList.add("show");
+      $("#thanks").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  </script>
+</body>
+</html>
