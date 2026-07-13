@@ -36,13 +36,13 @@
     .frame { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
     .frame path { fill: none; stroke: var(--rose); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
 
-    .bow { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 150px; filter: drop-shadow(0 6px 8px rgba(120,50,40,.18)); }
+    .bow { position: absolute; top: -2px; left: 50%; transform: translateX(-50%); width: 184px; filter: drop-shadow(0 6px 8px rgba(120,50,40,.18)); }
 
-    .bee { width: 156px; height: auto; overflow: visible; margin-bottom: 16px; }
+    .bee { width: 224px; height: auto; overflow: visible; margin-bottom: 20px; }
 
     .eyebrow {
       font-family: 'Great Vibes', cursive;
-      font-size: 58px;
+      font-size: 70px;
       line-height: 1;
       font-weight: 400;
       color: var(--rose-mute);
@@ -50,10 +50,10 @@
     .title {
       font-family: 'Great Vibes', cursive;
       color: var(--rose);
-      font-size: 112px;
-      line-height: 1.02;
+      font-size: 132px;
+      line-height: 1.0;
       font-weight: 400;
-      margin-top: 4px;
+      margin-top: 2px;
     }
   </style>
 </head>
@@ -127,8 +127,8 @@
       return d;
     }
     (function drawFrame() {
-      const w = 1200, h = 630, m = 26, r = 40, amp = 7, wl = 58;
-      const L = m, T = m, R = w - m, B = h - m;
+      const w = 1200, h = 630, m = 26, mTop = 56, r = 40, amp = 7, wl = 58;
+      const L = m, T = mTop, R = w - m, B = h - m;
       let d = `M ${L + r} ${T}`;
       d += wobbleEdge(L + r, T, R - r, T, amp, wl);
       d += ` Q ${R} ${T} ${R} ${T + r}`;
